@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dedications (2025)</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23393939'/></svg>">
+</head>
+
+<body>
+    <div class="buttons-array">
+        <button class="button" onclick="window.location.reload()">refresh</button>
+        <button class="button" onclick="saveScreenshot()">capture</button>
+    </div>
+
+    <canvas id="canvas"></canvas>
+    <script src="labels.js"></script>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let dots = [];
+
+        function resize() {
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            canvas.style.width = window.innerWidth + 'px';
+            canvas.style.height = window.innerHeight + 'px';
+            ctx.scale(dpr, dpr);
+            initDots();
+            draw();
+        }
+
+        function countLines(label) {
+            const maxWidth = 500;
+            ctx.font = '16px Helvetica, sans-serif';
+            const words = label.split(' ');
+            let line = '';
+            let lines = 1;
+            for (const word of words) {
+                const test = line ? line + ' ' + word : word;
+                if (ctx.measureText(test).width > maxWidth && line) {
+                    lines++;
+                    line = word;
+                } else {
+                    line = test;
+                }
+            }
+            return lines;
+        }
+
+        function initDots() {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            const lineHeight = 17;
+            const margin = 16;
+            dots = labels.map((label) => {
+                const lines = countLines(label);
+                // right edge
+                const maxX = w - 10 - 500 - margin;
+                // bottom edge
+                const maxY = h - 4 - (lines - 1) * lineHeight - 16 - margin;
+                return {
+                    x: Math.random() * (maxX - margin) + margin,
+                    y: Math.random() * Math.max(margin, maxY - margin) + margin,
+                    label,
+                };
+            });
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // // // Draw dashed lines between all pairs
+            // ctx.setLineDash([5, 2]);
+            // ctx.lineWidth = 1;
+            // ctx.strokeStyle = 'rgba(3, 3, 3, 0.5)';
+            // for (let i = 0; i < dots.length; i++) {
+            //     for (let j = i + 1; j < dots.length; j++) {
+            //         ctx.beginPath();
+            //         ctx.moveTo(dots[i].x, dots[i].y);
+            //         ctx.lineTo(dots[j].x, dots[j].y);
+            //         ctx.stroke();
+            //     }
+            // }
+
+            // Draw dots and labels
+            ctx.setLineDash([]);
+            dots.forEach(dot => {
+                ctx.beginPath();
+                ctx.arc(dot.x, dot.y, 3, 0, Math.PI * 2);
+                ctx.fillStyle = '#333';
+                ctx.fill();
+
+                ctx.font = '16px Helvetica, sans-serif';
+                ctx.fillStyle = 'rgba(3, 3, 3, 0.75)';
+                const labelX = dot.x + 10;
+                const maxWidth = 500;
+                const lineHeight = 17;
+                const words = dot.label.split(' ');
+                let line = '';
+                let lineY = dot.y + 4;
+                for (const word of words) {
+                    const test = line ? line + ' ' + word : word;
+                    if (ctx.measureText(test).width > maxWidth && line) {
+                        ctx.fillText(line, labelX, lineY);
+                        line = word;
+                        lineY += lineHeight;
+                    } else {
+                        line = test;
+                    }
+                }
+                ctx.fillText(line, labelX, lineY);
+            });
+        }
+
+        function saveScreenshot() {
+            ctx.save();
+            ctx.globalCompositeOperation = 'destination-over';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.restore();
+            const link = document.createElement('a');
+            link.download = 'dedications.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+    </script>
+</body>
+
+</html>

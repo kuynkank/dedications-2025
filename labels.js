@@ -1,0 +1,4 @@
+const labels = [
+    'To Kirkland', 'For Glory and Nan', 'To Karina, Elena, and Elias.', 'To Katie and our large, fluffy sons', ' And for Mary McCay, teacher.',
+    'To Windsor, Ontario, a good place to come from.', 'To Marilyn Butler Jack, for teaching me from whence I come.', 'To Gregory Glenn Jr., for showing me how far I can go.', 'For Albertina', 'to those who hold me close and do not let me go', 'to those of you who challenge me to live theory in a place beyond words', 'and those unnamed whom my heart remembers', 'For those who came before me', 'To Julie', 'for David', 'This book is for Quintana', 'for Toboré, Patient companion of a collector', 'to dear old Schumann and his beloved Clara', 'to the deep crimson of my blood', 'to those gnomes, dwarfs, sylphs, and nymphs who inhabit my life', 'to the memory of my years of hardship when everything was more austere and honourable, and I had never eaten lobster.', 'For Andy and The Gherkin'
+];
