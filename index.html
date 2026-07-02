@@ -12,9 +12,19 @@
 
 <body>
     <div class="buttons-array">
-        <button class="button" onclick="window.location.reload()">refresh</button>
-        <button class="button" onclick="saveScreenshot()">capture</button>
+        <div style="display:flex; gap:8px;">
+            <button class="button" onclick="window.location.reload()">refresh</button>
+            <button class="button" onclick="saveScreenshot()">capture</button>
+        </div>
     </div>
+
+    <label class="toggle-row" style="position:fixed; top:0; left:0; padding:12px;">
+        <span>constellation mode</span>
+        <label class="switch">
+            <input type="checkbox" id="linesToggle" onchange="toggleLines(this)">
+            <span class="slider"></span>
+        </label>
+    </label>
 
     <canvas id="canvas"></canvas>
     <script src="labels.js"></script>
@@ -23,6 +33,12 @@
         const ctx = canvas.getContext('2d');
 
         let dots = [];
+        let showLines = false;
+
+        function toggleLines(checkbox) {
+            showLines = checkbox.checked;
+            draw();
+        }
 
         function resize() {
             const dpr = window.devicePixelRatio || 1;
@@ -75,18 +91,27 @@
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // // // Draw dashed lines between all pairs
-            // ctx.setLineDash([5, 2]);
-            // ctx.lineWidth = 1;
-            // ctx.strokeStyle = 'rgba(3, 3, 3, 0.5)';
-            // for (let i = 0; i < dots.length; i++) {
-            //     for (let j = i + 1; j < dots.length; j++) {
-            //         ctx.beginPath();
-            //         ctx.moveTo(dots[i].x, dots[i].y);
-            //         ctx.lineTo(dots[j].x, dots[j].y);
-            //         ctx.stroke();
-            //     }
-            // }
+            if (showLines) {
+                const pairs = new Set();
+                ctx.setLineDash([5, 2]);
+                ctx.lineWidth = 1;
+                ctx.strokeStyle = 'rgba(3, 3, 3, 0.5)';
+                dots.forEach((_, i) => {
+                    const count = Math.floor(Math.random() * 4) + 1;
+                    for (let k = 0; k < count; k++) {
+                        let j = Math.floor(Math.random() * dots.length);
+                        if (j === i) j = (j + 1) % dots.length;
+                        const key = [Math.min(i, j), Math.max(i, j)].join('-');
+                        if (!pairs.has(key)) {
+                            pairs.add(key);
+                            ctx.beginPath();
+                            ctx.moveTo(dots[i].x, dots[i].y);
+                            ctx.lineTo(dots[j].x, dots[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                });
+            }
 
             // Draw dots and labels
             ctx.setLineDash([]);
