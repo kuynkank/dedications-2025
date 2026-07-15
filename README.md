@@ -4,4 +4,4 @@ Each **refresh** re-randomize the dots' placement. **Capture** saves the current
 
 [Why did I do this?](https://angiepham.space/image-text-etc/dedications/)
 
-[View live site](https://github.com/kuynkank/dedications-2025/settings/pages)
+[View live site](https://kuynkank.github.io/dedications-2025/)
